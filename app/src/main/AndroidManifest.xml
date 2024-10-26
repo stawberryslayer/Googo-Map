@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Map_Application"
         tools:targetApi="31">
+        <service
+            android:name=".MapService"
+            android:enabled="true"
+            android:exported="false"></service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
