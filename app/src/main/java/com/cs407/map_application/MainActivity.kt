@@ -1,7 +1,9 @@
 package com.cs407.map_application
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,18 +14,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
+        // 找到 "Start Plan" 按钮
+        val startPlanButton: Button = findViewById(R.id.button_start_plan)
+
+        // 设置按钮点击事件
+        startPlanButton.setOnClickListener {
+            val intent = Intent(this, DetailPage::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onStart() {
         super.onStart()
         Log.d("MainActivity", "onStart called")
-        // Load data if necessary or refresh UI
     }
 
     override fun onResume() {
@@ -34,8 +38,5 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d("MainActivity", "onPause called")
-        // Save any necessary data to storage (e.g., SharedPreferences or database)
-        //notifyDataSetChanged()
     }
-
 }
