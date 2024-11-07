@@ -49,10 +49,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
 secrets {
     // To add your Maps API key to this project:
     // 1. If the secrets.properties file does not exist, create it in the same folder as the local.properties file.
