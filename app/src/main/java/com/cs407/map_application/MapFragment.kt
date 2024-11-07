@@ -1,11 +1,15 @@
 package com.cs407.map_application;
+import AppDatabase
+import RouteDao
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.lifecycleScope;
 import androidx.room.Room;
+import com.cs407.map_application.model.DirectionsResponse
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.launch;
 import kotlinx.coroutines.withContext;
@@ -18,13 +22,14 @@ import retrofit2.http.Query;
 interface GoogleMapsApiService {
     @GET("maps/api/directions/json")
     suspend fun getDirections(
-            @Query("origin") origin: String,
-            @Query("destination") destination: String,
-            @Query("mode") mode: String,
-            @Query("key") apiKey: String
+        @Query("origin") origin: String,
+        @Query("destination") destination: String,
+        @Query("mode") mode: String,
+        @Query("key") apiKey: String
     ): Response<DirectionsResponse>
 }
-public class MapFragment{
+
+public class MapFragment : Fragment(){
     private lateinit var googleMapsApiService: GoogleMapsApiService;
     private lateinit var routeDao: RouteDao
     private val apiKey = "YOUR_GOOGLE_MAPS_API_KEY"
@@ -47,6 +52,7 @@ public class MapFragment{
         ).build()
         routeDao = db.routeDao()
 
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        return inflater.inflate(R.layout.activity_map, container, false)
 
+    }
 }
