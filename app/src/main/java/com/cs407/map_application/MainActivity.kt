@@ -25,15 +25,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-
+        }
             
-        // 找到 "Start Plan" 按钮
+        // 找到 "Start Plan" 按钮（相当于home page）
         val startPlanButton: Button = findViewById(R.id.button_start_plan)
+        // start button for making API request
+        val startButton: Button = findViewById(R.id.button_start)
 
         // 设置按钮点击事件
         startPlanButton.setOnClickListener {
             val intent = Intent(this, DetailPage::class.java)
             startActivity(intent)
+        }
+        startButton.setOnClickListener{
+            //send request
         }
 
         // Initialize the map
@@ -42,8 +47,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mapFragment.getMapAsync(this)
     }
 
+
     override fun onMapReady(map: GoogleMap) {
-        TODO("Not yet implemented")
         googleMap = map
         mapService = MapService(googleMap)
 
@@ -52,6 +57,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapService.initializeMap(defaultLocation, 10f)
         mapService.addMarker(defaultLocation, "San Francisco")
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -67,4 +73,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onPause()
         Log.d("MainActivity", "onPause called")
     }
+
+
+
 }
