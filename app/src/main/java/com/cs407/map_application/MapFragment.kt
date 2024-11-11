@@ -1,8 +1,4 @@
 package com.cs407.map_application;
-import AppDatabase
-import Location
-import Route
-import RouteDao
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +6,10 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.lifecycleScope;
 import androidx.room.Room;
+import com.cs407.map_application.data.AppDatabase
+import com.cs407.map_application.data.Location
+import com.cs407.map_application.data.Route
+import com.cs407.map_application.data.RouteDao
 import com.cs407.map_application.model.DirectionsResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers;

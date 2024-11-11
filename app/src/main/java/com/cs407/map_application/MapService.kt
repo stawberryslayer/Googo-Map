@@ -1,10 +1,12 @@
 package com.cs407.map_application
 
-import Location
-import LocationDao
-import Route
-import RouteDao
+import com.cs407.map_application.data.AppDatabase
+import com.cs407.map_application.data.Location
+import com.cs407.map_application.data.Route
+import com.cs407.map_application.data.RouteDao
 import android.content.Context
+import android.util.Log
+import com.cs407.map_application.data.LocationDao
 import com.cs407.map_application.model.DirectionsResponse
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
@@ -18,16 +20,16 @@ class MapService(
     private val context: Context
 ) {
     private lateinit var googleMapsApiService: GoogleMapsApiService;
-//    private lateinit var routeDao: RouteDao
-//    private lateinit var locationDao: LocationDao
-//    private lateinit var db: AppDatabase
+    private lateinit var routeDao: RouteDao
+    private lateinit var locationDao: LocationDao
+    private lateinit var db: AppDatabase
 
 
-    //private val db: AppDatabase = AppDatabase.getDatabase(context)
+//    private val db: AppDatabase = AppDatabase.getDatabase(context)
 
 
     init {
-        /*try {
+        try {
             Log.d("MapService", "Initializing database...")
             db = AppDatabase.getDatabase(context)
             routeDao = db.routeDao()
@@ -35,7 +37,7 @@ class MapService(
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("MapService", "Error initializing database: ${e.message}")
-        }*/
+        }
 
         // Initialize Retrofit for Google Maps API
         val retrofit = Retrofit.Builder()

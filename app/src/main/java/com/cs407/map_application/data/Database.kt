@@ -1,7 +1,10 @@
+package com.cs407.map_application.data
+
 import android.content.Context
 import androidx.room.*
 import androidx.room.RoomDatabase
 import java.util.*
+
 
 
 @Database(entities = [Location::class, Route::class], version = 1)
