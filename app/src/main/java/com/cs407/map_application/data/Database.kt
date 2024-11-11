@@ -1,7 +1,12 @@
+package com.cs407.map_application.data
+
 import android.content.Context
 import androidx.room.*
 import androidx.room.RoomDatabase
 import java.util.*
+import androidx.room.Dao
+import androidx.room.Database
+
 
 
 @Database(entities = [Location::class, Route::class], version = 1)
@@ -15,21 +20,20 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-//        fun getDatabase(context: Context): AppDatabase{
-//            return INSTANCE?: synchronized(this){
-//                val instance = Room.databaseBuilder(
-//                    context.applicationContext,
-//                    AppDatabase:: class.java,
-//                    context.getString(R.string.note_database),
-//
-//                    ).build()
-//                INSTANCE = instance
-//                instance
-//            }
-//
-//        }
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context,
+                    AppDatabase::class.java,
+                    "app_database"
+                ).fallbackToDestructiveMigration().build()
+                INSTANCE = instance
+                instance
+            }
+        }
     }
 }
+
 
 @Entity(
     tableName = "locations",
@@ -42,6 +46,8 @@ data class Location(
     val longitude: Double,
     val timestamp: Long = System.currentTimeMillis()
 )
+
+
 
 
 @Entity(tableName = "routes")
@@ -74,6 +80,7 @@ interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDestination(location: Location): Long
 
+
     @Query("SELECT * FROM locations WHERE id = :id")
     suspend fun getLocationById(id: Int): Location?
 
@@ -87,11 +94,17 @@ interface RouteDao {
 
     @Query("SELECT * FROM routes WHERE startId = :startId AND endId = :endId")
     suspend fun getRoutesBetweenDestinations(startId: Int, endId: Int): List<Route>
+
+
 }
 
 @Dao
 interface DeleteDao{
+    @Query("DELETE FROM locations WHERE id = :id")
+    suspend fun deleteLocationById(id: Int)
 
+    @Query("DELETE FROM routes WHERE id = :id")
+    suspend fun deleteRouteById(id: Int)
 }
 
 
