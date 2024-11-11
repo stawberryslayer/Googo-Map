@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.RoomDatabase
 import java.util.*
+import androidx.room.Dao
+import androidx.room.Database
 
 
 
@@ -76,11 +78,11 @@ class Converters {
 interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDestination(location: Location): Long
+    suspend fun insertDestination(location: Location): Long
 
 
     @Query("SELECT * FROM locations WHERE id = :id")
-    fun getLocationById(id: Int): Location?
+    suspend fun getLocationById(id: Int): Location?
 
 }
 
@@ -88,10 +90,10 @@ interface LocationDao {
 interface RouteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRoute(route: Route): Long
+    suspend fun insertRoute(route: Route): Long
 
     @Query("SELECT * FROM routes WHERE startId = :startId AND endId = :endId")
-    fun getRoutesBetweenDestinations(startId: Int, endId: Int): List<Route>
+    suspend fun getRoutesBetweenDestinations(startId: Int, endId: Int): List<Route>
 
 
 }
@@ -99,10 +101,10 @@ interface RouteDao {
 @Dao
 interface DeleteDao{
     @Query("DELETE FROM locations WHERE id = :id")
-     fun deleteLocationById(id: Int)
+    suspend fun deleteLocationById(id: Int)
 
     @Query("DELETE FROM routes WHERE id = :id")
-     fun deleteRouteById(id: Int)
+    suspend fun deleteRouteById(id: Int)
 }
 
 
