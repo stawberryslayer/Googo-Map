@@ -1,4 +1,4 @@
-package com.cs407.googomap
+package com.cs407.map_application
 
 import android.content.Intent
 import android.os.Bundle

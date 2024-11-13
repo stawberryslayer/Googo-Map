@@ -1,22 +1,263 @@
-
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Title Section -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plan Your Trip!"
+            android:textSize="24sp"
+            android:textColor="#70A7ED"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Trip Duration Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#70A7ED"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTintMode="src_atop"
+            android:layout_margin="8dp"
+            android:backgroundTint="@android:color/white"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/trip_duration_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trip Duration"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:elevation="4dp">
+
+                <Button
+                    android:id="@+id/button_decrease"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/text_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Days"
+                    android:textSize="18sp"
+                    android:layout_marginHorizontal="16dp" />
+
+                <Button
+                    android:id="@+id/button_increase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Destinations Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FF8800"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTintMode="src_atop"
+            android:layout_margin="8dp"
+            android:backgroundTint="@android:color/white"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/destination_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destinations"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:elevation="4dp">
+
+                <!-- Destination List (Use RecyclerView or LinearLayout for simplicity) -->
+                <LinearLayout
+                    android:id="@+id/destinations_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Example Destination Item -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@android:color/white"
+                        android:padding="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center_vertical"
+                        android:elevation="4dp">
+
+                        <CheckBox
+                            android:id="@+id/checkbox_destination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/destination_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Starbucks"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/start_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Start Time: 09:41 AM"
+                                android:textSize="14sp"
+                                android:background="#FF8800" />
+
+                            <TextView
+                                android:id="@+id/end_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="End Time: 10:41 AM"
+                                android:textSize="14sp"
+                                android:background="#FF8800" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Add Destination Button -->
+                <Button
+                    android:id="@+id/button_add_destination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_input_add"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:text="+" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Travel Mode Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#70ED9A"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTintMode="src_atop"
+            android:layout_margin="8dp"
+            android:backgroundTint="@android:color/white"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/travel_mode_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Travel Mode"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:elevation="4dp">
+
+                <Button
+                    android:id="@+id/button_previous_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="&lt;" />
+
+                <TextView
+                    android:id="@+id/travel_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="By Bus"
+                    android:textSize="18sp"
+                    android:layout_marginHorizontal="16dp" />
+
+                <Button
+                    android:id="@+id/button_next_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=">" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Start Button -->
+        <Button
+            android:id="@+id/button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Let's Start!"
+            android:background="#D9D9D9"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Bottom Navigation -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="#D9D9D9">
+
+            <Button
+                android:id="@+id/button_start_plan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start Plan" />
+
+            <Button
+                android:id="@+id/button_saved_plans"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Saved Plans" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

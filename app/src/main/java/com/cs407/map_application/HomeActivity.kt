@@ -1,4 +1,4 @@
-package com.cs407.googomap
+package com.cs407.map_application
 
 import android.os.Bundle
 import android.view.LayoutInflater
