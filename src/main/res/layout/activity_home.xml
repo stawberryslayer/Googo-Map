@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Plan Your Trip!"
+        android:textColor="#6DB2F2"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:textColor="@android:color/black"
+        android:text="Trip Duration"
+        android:textStyle="bold"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/decrement_button"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/trip_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:textStyle="italic"
+            android:text="1 Day(s)"
+            android:textSize="22sp"
+            />
+
+        <Button
+            android:id="@+id/increment_button"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:text="+" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Destination Card Views will go here -->
+
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        android:padding="10dp"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <!-- Travel Mode Title -->
+        <TextView
+            android:id="@+id/travel_mode_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Travel Mode"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center" />
+
+        <!-- Travel Mode Selector -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Left Arrow Button -->
+            <Button
+                android:id="@+id/left_arrow_button"
+                android:layout_width="60dp"
+                android:layout_height="48dp"
+                android:text="◀" />
+
+            <!-- Travel Mode Text -->
+            <TextView
+                android:id="@+id/travel_mode_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:text="By Bus"
+                android:textSize="22sp"
+                android:layout_marginHorizontal="16dp"
+                android:textColor="@android:color/black" />
+
+            <!-- Right Arrow Button -->
+            <Button
+                android:id="@+id/right_arrow_button"
+                android:layout_width="60dp"
+                android:layout_height="48dp"
+                android:text="▶" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/destination_adder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textStyle="bold"
+            android:text="Destinations"
+            android:textSize="24sp"
+            android:layout_marginHorizontal="16dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_margin="10dp"
+            android:elevation="1dp"
+            android:contentDescription="List of destinations">
+
+            <LinearLayout
+                android:id="@+id/destination_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp" />
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/add_destination_button"
+            android:layout_width="60dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:text="+"
+            android:textSize="24sp"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Let's Start!"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
+
+
+
+
