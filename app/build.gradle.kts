@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
     id("kotlin-kapt")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
@@ -11,6 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cs407.map_application"
+
         minSdk = 24
         targetSdk = 34
         versionCode = 1

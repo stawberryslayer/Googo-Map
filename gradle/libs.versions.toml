@@ -14,6 +14,7 @@ playServicesLocation = "21.3.0"
 roomCommon = "2.6.1"
 roomKtx = "2.6.1"
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,6 +28,7 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
