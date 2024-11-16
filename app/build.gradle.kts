@@ -1,9 +1,14 @@
+// build.gradle.kts
 plugins {
+    
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
     id("kotlin-kapt")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+
 }
 
 android {
@@ -21,6 +26,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true  // 启用 ViewBinding
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -30,16 +39,32 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+
+    // Fragment
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -64,6 +89,9 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
+    //Ziqi's dependency
+    testImplementation("junit:junit:4.13.2")
+    //main dependencey
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
