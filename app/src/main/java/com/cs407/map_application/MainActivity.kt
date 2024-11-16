@@ -55,10 +55,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.rvDestinations.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = this@MainActivity.adapter
-        }
+//        binding.rvDestinations.apply {
+//            layoutManager = LinearLayoutManager(this@MainActivity)
+//            adapter = this@MainActivity.adapter
+//        }
     }
 
     private fun setupObservers() {
@@ -72,19 +72,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.fabAdd.setOnClickListener {
-            // 添加测试数据
-            val destination = Destination(
-                name = "Test Location ${System.currentTimeMillis()}",
-                address = "Test Address",
-                latitude = 0.0,
-                longitude = 0.0
-            )
-            viewModel.addDestination(destination)
+//        binding.fabAdd.setOnClickListener {
+//            // 添加测试数据
+//            val destination = Destination(
+//                name = "Test Location ${System.currentTimeMillis()}",
+//                address = "Test Address",
+//                latitude = 0.0,
+//                longitude = 0.0
+//            )
+//            viewModel.addDestination(destination)
+//        }
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        }
+
         mapService = MapService(applicationContext)
             
         // 找到 "Start Plan" 按钮（相当于home page）

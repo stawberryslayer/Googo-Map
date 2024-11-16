@@ -6,8 +6,7 @@ plugins {
 
     id("kotlin-kapt")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+
 
 }
 
