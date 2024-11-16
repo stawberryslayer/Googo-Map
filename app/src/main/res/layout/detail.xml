@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailPage">
+
+    <!-- 返回按钮 -->
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Back"
+        android:background="?android:selectableItemBackground"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp" />
+
+    <!-- 标题文字 -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hope you enjoy your trip!"
+        android:textSize="24sp"
+        android:layout_below="@id/back_button"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@android:color/black" />
+
+    <!-- 地图 -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_below="@id/title"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 下载按钮 -->
+    <Button
+        android:id="@+id/download_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download plan"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/map"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp" />
+
+
+
+</RelativeLayout>
