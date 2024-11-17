@@ -92,40 +92,59 @@ class MapService(
 
         val service = retrofit.create(GoogleMapsApiService::class.java)
         coroutineScope.launch(Dispatchers.IO) {
+
             try {
                 // Fetch directions from Google Maps API
-                val response = googleMapsApiService.getDirections(origin, destination, "driving", "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU")
+                val response = googleMapsApiService.getDirections(
+                    origin,
+                    destination,
+                    "driving",
+                    "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
+                )
+
                 if (response.isSuccessful && response.body() != null) {
                     val directionsResponse = response.body()!!
 
-                    // Assuming you have already inserted the locations into your database:
-                    val startLocation = Location(name = origin, latitude = 0.0, longitude = 0.0, timestamp = 0)  // Replace with real values
-                    val endLocation = Location(name = destination, latitude = 0.0, longitude = 0.0, timestamp = 0)  // Replace with real values
-//                    val startId = locationDao.insertDestination(startLocation).toInt()
-//                    val endId = locationDao.insertDestination(endLocation).toInt()
-//
-//                    // Map response to Route entity
-//                    val route = mapToRoute(directionsResponse, startId, endId)
-//
-//                    // Insert the Route entity into Room database
-//                    routeDao.insertRoute(route)
+                    // Log the response for debugging
+                    Log.d("GoogleMapsAPI", "Directions response: $directionsResponse")
 
+                    // Assuming you have already inserted the locations into your database:
+                    val startLocation =
+                        Location(name = origin, latitude = 0.0, longitude = 0.0, timestamp = 0)
+                    val endLocation = Location(
+                        name = destination,
+                        latitude = 0.0,
+                        longitude = 0.0,
+                        timestamp = 0
+                    )
+
+                    // Here you can map the response to your Route entity and save it to the database if needed.
+                    // val startId = locationDao.insertDestination(startLocation).toInt()
+                    // val endId = locationDao.insertDestination(endLocation).toInt()
+                    // val route = mapToRoute(directionsResponse, startId, endId)
+                    // routeDao.insertRoute(route)
 
                     withContext(Dispatchers.Main) {
                         onResult(true, "Route saved successfully.")
                     }
                 } else {
+                    Log.e(
+                        "GoogleMapsAPI",
+                        "Failed to get directions: ${response.errorBody()?.string()}"
+                    )
                     withContext(Dispatchers.Main) {
                         onResult(false, "Failed to get directions.")
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Log.e("GoogleMapsAPI", "Error: ${e.message}")
                 withContext(Dispatchers.Main) {
                     onResult(false, "An error occurred: ${e.message}")
                 }
             }
         }
+
     }
 
     fun fetchDirections(start: LatLng, end: LatLng, waypoints: List<LatLng>) {

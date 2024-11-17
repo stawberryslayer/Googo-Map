@@ -98,15 +98,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, DetailPage::class.java)
             startActivity(intent)
         }
+
         startButton.setOnClickListener{
             //send request
-            val origin = "New York, NY"
-            val destination = "Los Angeles, CA"
+
+            val origin = "832 Regent St, Madison, WI 53715"
+            val destination = "650 Elm Drive, Madison, WI 53706"
 
             // Call the map service to get directions
             mapService.getDirections(origin, destination, lifecycleScope) { success, message ->
                 if (success) {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 }
