@@ -6,9 +6,11 @@ import com.cs407.map_application.data.Route
 import com.cs407.map_application.data.RouteDao
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
 import com.cs407.map_application.data.LocationDao
 import com.cs407.map_application.model.DirectionsResponse
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +32,12 @@ class MapService(
 
     init {
         try {
+            // Initialize Room database
+//            val db = Room.databaseBuilder(
+//                requireContext(),
+//                AppDatabase::class.java, "app_database"
+//            ).build()
+
             Log.d("MapService", "Initializing database...")
             db = AppDatabase.getDatabase(context)
             routeDao = db.routeDao()
@@ -64,19 +72,8 @@ class MapService(
     fun drawRoute(start: LatLng, end: LatLng, waypoints: List<LatLng> = listOf()) {
         // Implement route drawing logic, e.g., by calling Google Directions API
     }
-    private fun mapToRoute(response: DirectionsResponse, startId: Int, endId: Int): Route {
-        val route = response.routes.firstOrNull()
-        val leg = route?.legs?.firstOrNull()
 
-        return Route(
-            startId = startId,
-            endId = endId,
-            distance = leg?.distance?.value?.toDouble() ?: 0.0,
-            duration = leg?.duration?.value ?: 0,
-            transitInfo = "",  // Optionally, you can serialize detailed transit info here
-            transportMode = "driving"
-        )
-    }
+
 
     fun getDirections(
         origin: String,
@@ -84,6 +81,7 @@ class MapService(
         coroutineScope: CoroutineScope,
         onResult: (Boolean, String) -> Unit
     ) {
+
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://maps.googleapis.com/")
@@ -124,8 +122,11 @@ class MapService(
                     // val route = mapToRoute(directionsResponse, startId, endId)
                     // routeDao.insertRoute(route)
 
+                    mapToRoute(directionsResponse,0,1)
                     withContext(Dispatchers.Main) {
                         onResult(true, "Route saved successfully.")
+
+
                     }
                 } else {
                     Log.e(
@@ -150,5 +151,45 @@ class MapService(
     fun fetchDirections(start: LatLng, end: LatLng, waypoints: List<LatLng>) {
         // Make a network request to the Google Directions API
         // Process the response and provide necessary data for the UI
+    }
+
+
+
+    private fun mapToRoute(response: DirectionsResponse, startId: Int, endId: Int): Route? {
+
+        if (response.routes.isEmpty()) return null
+
+        // val route = response.routes.firstOrNull()
+        val route = response.routes[0]
+
+        // Extract distance and duration from the first leg (since there's typically only one leg for point-to-point routes)
+        val leg = route.legs.firstOrNull() ?: return null
+
+        // Extract distance and duration
+        val totalDistance = leg.distance.value.toDouble()  // meters
+        val totalDuration = leg.duration.value             // seconds
+
+        // Serialize the 'legs' object to JSON for transitInfo
+        val gson = Gson()
+        val transitInfo = gson.toJson(leg)
+
+
+        val returnRoute = Route(
+            startId = startId,
+            endId = endId,
+            transitInfo = transitInfo,
+            //distance = leg?.distance?.value?.toDouble() ?: 0.0,
+            //duration = leg?.duration?.value ?: 0,
+            distance = totalDistance,
+            duration = totalDuration,
+            transportMode = "driving"
+        )
+
+        Log.d(
+            "RouteConversion",
+            "Return a route: ${returnRoute}"
+        )
+
+        return returnRoute
     }
 }
