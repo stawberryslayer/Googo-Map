@@ -55,10 +55,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.rvDestinations.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = this@MainActivity.adapter
-        }
+//        binding.rvDestinations.apply {
+//            layoutManager = LinearLayoutManager(this@MainActivity)
+//            adapter = this@MainActivity.adapter
+//        }
     }
 
     private fun setupObservers() {
@@ -72,19 +72,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.fabAdd.setOnClickListener {
-            // 添加测试数据
-            val destination = Destination(
-                name = "Test Location ${System.currentTimeMillis()}",
-                address = "Test Address",
-                latitude = 0.0,
-                longitude = 0.0
-            )
-            viewModel.addDestination(destination)
+//        binding.fabAdd.setOnClickListener {
+//            // 添加测试数据
+//            val destination = Destination(
+//                name = "Test Location ${System.currentTimeMillis()}",
+//                address = "Test Address",
+//                latitude = 0.0,
+//                longitude = 0.0
+//            )
+//            viewModel.addDestination(destination)
+//        }
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        }
+
         mapService = MapService(applicationContext)
             
         // 找到 "Start Plan" 按钮（相当于home page）
@@ -97,15 +98,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, DetailPage::class.java)
             startActivity(intent)
         }
+
         startButton.setOnClickListener{
             //send request
-            val origin = "New York, NY"
-            val destination = "Los Angeles, CA"
+
+            val origin = "832 Regent St, Madison, WI 53715"
+            val destination = "650 Elm Drive, Madison, WI 53706"
 
             // Call the map service to get directions
             mapService.getDirections(origin, destination, lifecycleScope) { success, message ->
                 if (success) {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 }
