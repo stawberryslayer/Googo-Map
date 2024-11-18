@@ -1,5 +1,7 @@
 package com.cs407.map_application
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -28,6 +30,7 @@ class HomeActivity : AppCompatActivity() {
         val tripDurationTextView: TextView = findViewById(R.id.trip_duration)
         val incrementButton: Button = findViewById(R.id.increment_button)
         val decrementButton: Button = findViewById(R.id.decrement_button)
+        val startButton: Button = findViewById(R.id.button)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -96,6 +99,25 @@ class HomeActivity : AppCompatActivity() {
             addDestination("New Destination")
         }
 
+        startButton.setOnClickListener{
+            openGoogleMaps("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
+        }
+
+
+
+    }
+    fun openGoogleMaps(origin: String, destination: String) {
+        val googleMapsUrl = "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination&travelmode=driving"
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(googleMapsUrl))
+        intent.setPackage("com.google.android.apps.maps") // Ensure it opens in Google Maps app if installed
+
+        // Check if there's an app that can handle the intent
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Google Maps is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
