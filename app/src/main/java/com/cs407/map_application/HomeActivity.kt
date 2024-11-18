@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -152,8 +154,25 @@ class HomeActivity : AppCompatActivity() {
         val destinationName: TextView = destinationView.findViewById(R.id.destination_name)
         destinationName.text = name
 
+        // Handle the delete button
+        val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
+        deleteButton.setOnClickListener {
+            // Remove the destination item
+            destinationList.removeView(destinationView)
+
+            // If no destinations are left, show the hint text again
+            if (destinationList.childCount == 0) {
+                findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
+            }
+        }
+
         // Add the new destination view to the list
         destinationList.addView(destinationView)
+
+        // Hide the dashed rectangle and hint after the first destination is added
+        if (destinationList.childCount > 0) {
+            findViewById<TextView>(R.id.hint_text).visibility = View.GONE
+        }
     }
 }
 
