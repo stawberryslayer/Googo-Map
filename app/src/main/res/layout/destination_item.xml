@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="2dp"
-    android:elevation="2dp"
+    android:padding="1dp"
     android:layout_marginBottom="8dp">
 
     <CheckBox
@@ -21,4 +20,15 @@
         android:text="New Destination"
         android:textSize="16sp"
         android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="55dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="70dp"
+        android:background="@android:color/transparent"
+        android:text="×"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center" />
 </LinearLayout>
+
