@@ -80,7 +80,7 @@
         android:orientation="vertical"
         android:layout_margin="16dp"
         android:padding="10dp"
-        android:elevation="4dp"
+        android:elevation="3dp"
         android:gravity="center"
         android:layout_gravity="center">
 
@@ -101,13 +101,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            >
 
             <!-- Left Arrow Button -->
             <Button
                 android:id="@+id/left_arrow_button"
                 android:layout_width="60dp"
                 android:layout_height="48dp"
+                android:layout_marginLeft="64dp"
                 android:text="◀" />
 
             <!-- Travel Mode Text -->
@@ -116,9 +117,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="italic"
-                android:text="By Bus"
+                android:text="By  Bus "
                 android:textSize="22sp"
-                android:layout_marginHorizontal="16dp" />
+                android:layout_marginTop="1dp"
+                android:layout_marginHorizontal="17dp" />
+
+
 
             <!-- Right Arrow Button -->
             <Button
@@ -200,9 +204,36 @@
             android:layout_gravity="center"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="30dp">
 
+        <!-- First Rectangle Button -->
 
+        <!-- Second Rectangle Button -->
 
+        <Button
+            android:id="@+id/button_one"
+            android:layout_width="210dp"
+            android:layout_height="60dp"
+
+            android:text="Home Page"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            />
+
+        <Button
+            android:id="@+id/button_two"
+            android:layout_width="210dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/teal_700"
+            android:text="Saved Plans"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 </LinearLayout>
 
