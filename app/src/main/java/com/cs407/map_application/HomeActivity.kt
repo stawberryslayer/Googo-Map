@@ -18,7 +18,7 @@ class HomeActivity : AppCompatActivity() {
     private var tripDuration: Int = 1 // Default trip duration
     private val maxDuration: Int = 7 // Maximum trip duration
 
-    private val travelModes = arrayOf("By Bus", "Walking", "By Car")
+    private val travelModes = arrayOf("By  bus ", "Walking", "By  Car ")
     private var currentModeIndex = 0
 
     private lateinit var destinationList: LinearLayout
@@ -120,12 +120,6 @@ class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
-
-
-
-
 
     private fun updateTripDurationDisplay(tripDurationTextView: TextView) {
         tripDurationTextView.text = "$tripDuration Day(s)"
