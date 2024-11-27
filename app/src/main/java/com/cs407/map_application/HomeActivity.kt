@@ -1,5 +1,6 @@
 package com.cs407.map_application
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,8 +18,9 @@ class HomeActivity : AppCompatActivity() {
 
     private var tripDuration: Int = 1 // Default trip duration
     private val maxDuration: Int = 7 // Maximum trip duration
-
-    private val travelModes = arrayOf("By  bus ", "Walking", "By  Car ")
+    private lateinit var hintText: TextView
+    private val REQUEST_CODE_MAP = 1
+    private val travelModes = arrayOf("By Bus", "Walking", "By Car")
     private var currentModeIndex = 0
 
     private lateinit var destinationList: LinearLayout
@@ -92,37 +94,36 @@ class HomeActivity : AppCompatActivity() {
         destinationList = findViewById(R.id.destination_list)
         val addDestinationButton: Button = findViewById(R.id.add_destination_button)
 
-
-        // Add a new destination item when "+" button is clicked
         addDestinationButton.setOnClickListener {
-            addDestination("New Destination")
-        }
-
-        val startButton: Button = findViewById(R.id.button)
-        // Click listener for "Home Page" button
-        startButton.setOnClickListener {
-            val intent = Intent(this, PlanActivity::class.java)
-            startActivity(intent)
-            finish() // Close current activity to prevent stack buildup
-        }
-
-        // Initialize buttons
-        val homeButton: Button = findViewById(R.id.home)
-        val savedPlansButton: Button = findViewById(R.id.plan)
-
-        // Click listener for "Home Page" button
-        savedPlansButton.setOnClickListener {
-            val intent = Intent(this, PlanActivity::class.java)
-            startActivity(intent)
-            finish() // Close current activity to prevent stack buildup
-        }
-
-        // Click listener for "Saved Plans" button (do nothing)
-        homeButton.setOnClickListener {
-            // Stay on the current page
+            val intent = Intent(this, SelectLocationActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_MAP)
         }
 
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_MAP && resultCode == RESULT_OK) {
+            val locationName = data?.getStringExtra("location_name") ?: "New Destination"
+            val latitude = data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+            val longitude = data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+
+            val destinationView = LayoutInflater.from(this).inflate(R.layout.destination_item, destinationList, false)
+
+            val destinationNameText: TextView = destinationView.findViewById(R.id.destination_name)
+            destinationNameText.text = "$locationName (Lat: $latitude, Lng: $longitude)"
+
+            val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
+            deleteButton.setOnClickListener {
+                destinationList.removeView(destinationView)
+            }
+
+            destinationList.addView(destinationView)
+        }
+    }
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present
@@ -144,6 +145,12 @@ class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
+
+
+
+
 
     private fun updateTripDurationDisplay(tripDurationTextView: TextView) {
         tripDurationTextView.text = "$tripDuration Day(s)"
@@ -172,26 +179,19 @@ class HomeActivity : AppCompatActivity() {
         val destinationName: TextView = destinationView.findViewById(R.id.destination_name)
         destinationName.text = name
 
-        // Handle the delete button
+        // Find the delete button in the destination_item layout
         val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
-        deleteButton.setOnClickListener {
-            // Remove the destination item
-            destinationList.removeView(destinationView)
 
-            // If no destinations are left, show the hint text again
-            if (destinationList.childCount == 0) {
-                findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
-            }
+        // Set the click listener for the delete button
+        deleteButton.setOnClickListener {
+            // Remove the destination view from the list
+            destinationList.removeView(destinationView)
         }
 
         // Add the new destination view to the list
         destinationList.addView(destinationView)
-
-        // Hide the dashed rectangle and hint after the first destination is added
-        if (destinationList.childCount > 0) {
-            findViewById<TextView>(R.id.hint_text).visibility = View.GONE
-        }
     }
+
 }
 
 
