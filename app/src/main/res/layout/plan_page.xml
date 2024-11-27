@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Include Header with Tabs -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ready for an amazing trip?"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginBottom="26dp" />
+
+        <!-- Day Tabs -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="22dp"
+            android:gravity="center">
+
+            <!-- Example of Day Tabs -->
+            <Button
+                android:id="@+id/day1_button"
+                android:layout_width="65dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/day_tab_selected"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Day 1"
+                android:textColor="@android:color/black"
+                android:textSize="11dp"
+                tools:ignore="TextSizeCheck" />
+
+            <Button
+                android:id="@+id/day2_button"
+                android:layout_width="65dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/day_tab_unselected"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Day 2"
+                android:textColor="@android:color/black"
+                android:textSize="11dp"
+                tools:ignore="TextSizeCheck" />
+
+            <!-- Add more tabs as needed -->
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Include Vertical Timeline -->
+    <!-- Include Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginLeft="200dp"
+        >
+
+        <Button
+            android:id="@+id/view_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Details >"
+            android:textSize="16sp"
+            android:backgroundTint="@color/material_dynamic_neutral90"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="552dp">
+    <Button
+        android:id="@+id/home"
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:text="Home Page"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/material_dynamic_secondary60"
+        android:textSize="18sp"
+        />
+
+    <Button
+        android:id="@+id/plan"
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:text="Saved Plans"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

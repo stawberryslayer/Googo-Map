@@ -1,12 +1,12 @@
 package com.cs407.map_application
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -96,6 +96,30 @@ class HomeActivity : AppCompatActivity() {
         // Add a new destination item when "+" button is clicked
         addDestinationButton.setOnClickListener {
             addDestination("New Destination")
+        }
+
+        val startButton: Button = findViewById(R.id.button)
+        // Click listener for "Home Page" button
+        startButton.setOnClickListener {
+            val intent = Intent(this, PlanActivity::class.java)
+            startActivity(intent)
+            finish() // Close current activity to prevent stack buildup
+        }
+
+        // Initialize buttons
+        val homeButton: Button = findViewById(R.id.home)
+        val savedPlansButton: Button = findViewById(R.id.plan)
+
+        // Click listener for "Home Page" button
+        savedPlansButton.setOnClickListener {
+            val intent = Intent(this, PlanActivity::class.java)
+            startActivity(intent)
+            finish() // Close current activity to prevent stack buildup
+        }
+
+        // Click listener for "Saved Plans" button (do nothing)
+        homeButton.setOnClickListener {
+            // Stay on the current page
         }
 
     }

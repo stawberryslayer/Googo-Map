@@ -209,14 +209,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="20dp">
 
         <!-- First Rectangle Button -->
 
         <!-- Second Rectangle Button -->
 
         <Button
-            android:id="@+id/button_one"
+            android:id="@+id/home"
             android:layout_width="210dp"
             android:layout_height="60dp"
 
@@ -226,10 +226,10 @@
             />
 
         <Button
-            android:id="@+id/button_two"
+            android:id="@+id/plan"
             android:layout_width="210dp"
             android:layout_height="60dp"
-            android:backgroundTint="@color/teal_700"
+            android:backgroundTint="@color/material_dynamic_secondary60"
             android:text="Saved Plans"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
