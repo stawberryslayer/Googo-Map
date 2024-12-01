@@ -2,10 +2,12 @@ package com.cs407.map_application
 
 import android.content.Intent
 import android.net.Uri
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,7 +19,8 @@ class HomeActivity : AppCompatActivity() {
 
     private var tripDuration: Int = 1 // Default trip duration
     private val maxDuration: Int = 7 // Maximum trip duration
-
+    private lateinit var hintText: TextView
+    private val REQUEST_CODE_MAP = 1
     private val travelModes = arrayOf("By Bus", "Walking", "By Car")
     private var currentModeIndex = 0
 
@@ -93,10 +96,9 @@ class HomeActivity : AppCompatActivity() {
         destinationList = findViewById(R.id.destination_list)
         val addDestinationButton: Button = findViewById(R.id.add_destination_button)
 
-
-        // Add a new destination item when "+" button is clicked
         addDestinationButton.setOnClickListener {
-            addDestination("New Destination")
+            val intent = Intent(this, SelectLocationActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_MAP)
         }
 
         startButton.setOnClickListener{
@@ -119,6 +121,30 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "Google Maps is not installed", Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_MAP && resultCode == RESULT_OK) {
+            val locationName = data?.getStringExtra("location_name") ?: "New Destination"
+            val latitude = data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+            val longitude = data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+
+            val destinationView = LayoutInflater.from(this).inflate(R.layout.destination_item, destinationList, false)
+
+            val destinationNameText: TextView = destinationView.findViewById(R.id.destination_name)
+            destinationNameText.text = "$locationName (Lat: $latitude, Lng: $longitude)"
+
+            val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
+            deleteButton.setOnClickListener {
+                destinationList.removeView(destinationView)
+            }
+
+            destinationList.addView(destinationView)
+        }
+    }
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present
@@ -174,9 +200,19 @@ class HomeActivity : AppCompatActivity() {
         val destinationName: TextView = destinationView.findViewById(R.id.destination_name)
         destinationName.text = name
 
+        // Find the delete button in the destination_item layout
+        val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
+
+        // Set the click listener for the delete button
+        deleteButton.setOnClickListener {
+            // Remove the destination view from the list
+            destinationList.removeView(destinationView)
+        }
+
         // Add the new destination view to the list
         destinationList.addView(destinationView)
     }
+
 }
 
 

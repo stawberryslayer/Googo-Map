@@ -10,3 +10,4 @@ UW-Madison CS407 project
 
 - Commit Messages: Write clear, concise commit messages that explain whether you are **developing** certain feature or you are **fixing** some issues and what have you changed. 
 
+

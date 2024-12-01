@@ -13,6 +13,11 @@ playServicesMaps = "19.0.0"
 playServicesLocation = "21.3.0"
 roomCommon = "2.6.1"
 roomKtx = "2.6.1"
+places = "4.1.0"
+placesVersion = "2.6.0"
+roomCompiler = "2.5.0"
+roomPaging = "2.6.1"
+roomRuntime = "2.6.1"
 
 
 [libraries]
@@ -28,7 +33,11 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
-
+places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+google-places = { group = "com.google.android.libraries.places", name = "places", version.ref = "placesVersion" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

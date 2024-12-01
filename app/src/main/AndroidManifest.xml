@@ -20,7 +20,8 @@
         <service
             android:name=".MapService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false"
+            tools:ignore="Instantiatable"></service>
 
 
         <meta-data
@@ -46,6 +47,16 @@
             android:name=".HomeActivity"
             android:exported="true">
             <!-- No intent-filter needed here -->
+        </activity>
+
+        <activity
+            android:name=".PlanActivity"
+            android:exported="true">
+            <!-- No intent-filter needed here -->
+        </activity>
+
+        <activity
+            android:name=".SelectLocationActivity">
         </activity>
 
     </application>
