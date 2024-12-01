@@ -4,7 +4,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs.kotlin")
+    id("io.github.takahirom.roborazzi") version "1.8.0-alpha-5"
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
 
@@ -26,7 +28,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true  // 启用 ViewBinding
+        viewBinding = true
     }
 
     buildTypes {
@@ -85,8 +87,9 @@ dependencies {
     implementation("com.google.android.libraries.places:places:2.6.0")
 
 
+    annotationProcessor(libs.androidx.room.compiler)
     //implementation("com.google.android.gms:play-services-location:21.0.1")
-    kapt ("androidx.room:room-compiler:2.6.0")
+    ksp(libs.androidx.room.compiler)
     implementation("androidx.room:room-ktx:2.5.0")
     implementation(libs.play.services.location)
     implementation(libs.androidx.room.common)
