@@ -106,9 +106,9 @@ class HomeActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_MAP)
         }
 
-        startButton.setOnClickListener{
-            openGoogleMapsWithSelectedRoute("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
-        }
+//        startButton.setOnClickListener{
+//            openGoogleMapsWithSelectedRoute("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
+//        }
 
 
 
@@ -164,6 +164,7 @@ class HomeActivity : AppCompatActivity() {
 
         })
     }
+
     fun openGoogleMaps(origin: String, destination: String) {
         val googleMapsUrl = "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination&travelmode=driving"
 
