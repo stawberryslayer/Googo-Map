@@ -86,6 +86,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.android.libraries.places:places:2.6.0")
 
+    //for route display
+    implementation ("com.google.maps.android:android-maps-utils:2.3.0")
 
     annotationProcessor(libs.androidx.room.compiler)
     //implementation("com.google.android.gms:play-services-location:21.0.1")
