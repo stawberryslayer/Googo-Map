@@ -63,6 +63,21 @@
         </LinearLayout>
     </LinearLayout>
 
+    <ScrollView
+        android:layout_width="350dp"
+        android:layout_height="450dp"
+        android:gravity="center"
+        android:layout_marginLeft="40dp"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:id="@+id/planContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </ScrollView>
+
+
     <!-- Include Vertical Timeline -->
     <!-- Include Footer -->
     <LinearLayout
@@ -90,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="552dp">
+        android:layout_marginTop="102dp">
     <Button
         android:id="@+id/home"
         android:layout_width="210dp"
