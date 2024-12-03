@@ -12,19 +12,12 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:text="Capitol Square"
         android:textStyle="bold"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/endLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="State Street"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp" />
+        android:textSize="24sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal">
 
         <ImageView
