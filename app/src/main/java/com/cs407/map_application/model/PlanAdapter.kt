@@ -31,7 +31,7 @@ class PlanAdapter(private val segments: List<PlanSegment>) : RecyclerView.Adapte
                 "Walking" -> R.drawable.ic_walk
                 "Car" -> R.drawable.ic_car
                 "Bus" -> R.drawable.ic_bus
-                else -> R.drawable.ic_default_transport
+                else -> R.drawable.ic_default
             }
         )
     }
