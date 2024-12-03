@@ -4,11 +4,14 @@ import android.content.Intent
 import android.net.Uri
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,9 +19,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.cs407.map_application.data.AppDatabase
+import com.cs407.map_application.data.Location
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -28,12 +39,18 @@ class HomeActivity : AppCompatActivity() {
     private val REQUEST_CODE_MAP = 1
     private val travelModes = arrayOf("By Bus", "Walking", "By Car")
     private var currentModeIndex = 0
+    private var locationList: MutableList<Location> = mutableListOf()
+
 
     private lateinit var destinationList: LinearLayout
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        val database = AppDatabase.getDatabase(this)
 
         val tripDurationTextView: TextView = findViewById(R.id.trip_duration)
         val incrementButton: Button = findViewById(R.id.increment_button)
@@ -106,7 +123,58 @@ class HomeActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_MAP)
         }
 
+
+        // Initialize buttons
+        val homeButton: Button = findViewById(R.id.home)
+        val savedPlansButton: Button = findViewById(R.id.plan)
+
+        // Click listener for "Home Page" button
+        savedPlansButton.setOnClickListener {
+            val intent = Intent(this, PlanActivity::class.java)
+            startActivity(intent)
+            finish() // Close current activity to prevent stack buildup
+        }
+
+        // Click listener for "Saved Plans" button (do nothing)
+        homeButton.setOnClickListener {
+            // Stay on the current page
+        }
+
+        startButton.setOnClickListener{
+
+            val sharedPreferences = this.getSharedPreferences("TripPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.edit().putInt("trip_duration", tripDuration).apply()
+            sharedPreferences.edit().putString("travel_mode", travelModes[currentModeIndex]).apply()
+
+            val locationDao = database.locationDao()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                for (location in locationList) {
+                    locationDao.insertLocation(location)
+                }
+            }
+
+
+            // preference getter
+            //val tripDuration = sharedPreferences.getInt("trip_duration", 1)
+            //val travelMode = sharedPreferences.getInt("travel_mode", "By Car")
+//            CoroutineScope(Dispatchers.IO).launch {
+//                val testList = locationDao.getAllLocations()
+//                testList.forEach { location ->
+//                    Log.d("LocationInfo", "ID: ${location.id}, Name: ${location.name}, Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+//                }
+//            }
+
+
+
+            //openGoogleMapsWithSelectedRoute("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
+        }
+
+
+
     }
+
+
     fun openGoogleMapsWithSelectedRoute(origin: String, destination: String) {
         val apiKey = "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
         val url =
@@ -185,6 +253,7 @@ class HomeActivity : AppCompatActivity() {
             val destinationNameText: TextView = destinationView.findViewById(R.id.destination_name)
             destinationNameText.text = "$locationName (Lat: $latitude, Lng: $longitude)"
 
+            locationList.add(Location(name = locationName, latitude = latitude, longitude = longitude))
             val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
             deleteButton.setOnClickListener {
                 destinationList.removeView(destinationView)
@@ -192,31 +261,10 @@ class HomeActivity : AppCompatActivity() {
 
             destinationList.addView(destinationView)
         }
-
-        val startButton: Button = findViewById(R.id.start_button)
-        // Click listener for "Home Page" button
-        startButton.setOnClickListener {
-            val intent = Intent(this, PlanActivity::class.java)
-            startActivity(intent)
-            finish() // Close current activity to prevent stack buildup
-        }
-
-        // Initialize buttons
-        val homeButton: Button = findViewById(R.id.home)
-        val savedPlansButton: Button = findViewById(R.id.plan)
-
-        // Click listener for "Home Page" button
-        savedPlansButton.setOnClickListener {
-            val intent = Intent(this, PlanActivity::class.java)
-            startActivity(intent)
-            finish() // Close current activity to prevent stack buildup
-        }
-
-        // Click listener for "Saved Plans" button (do nothing)
-        homeButton.setOnClickListener {
-            // Stay on the current page
-        }
     }
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present
@@ -238,6 +286,8 @@ class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
     private fun updateTripDurationDisplay(tripDurationTextView: TextView) {
         tripDurationTextView.text = "$tripDuration Day(s)"
