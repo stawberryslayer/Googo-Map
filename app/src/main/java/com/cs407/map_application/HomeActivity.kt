@@ -1,7 +1,9 @@
 package com.cs407.map_application
 
-import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.app.Activity
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,6 +15,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContentProviderCompat.requireContext
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 
 class HomeActivity : AppCompatActivity() {
 
@@ -32,6 +38,7 @@ class HomeActivity : AppCompatActivity() {
         val tripDurationTextView: TextView = findViewById(R.id.trip_duration)
         val incrementButton: Button = findViewById(R.id.increment_button)
         val decrementButton: Button = findViewById(R.id.decrement_button)
+        val startButton: Button = findViewById(R.id.start_button)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -99,6 +106,77 @@ class HomeActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_MAP)
         }
 
+//        startButton.setOnClickListener{
+//            openGoogleMapsWithSelectedRoute("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
+//        }
+
+
+
+    }
+    fun openGoogleMapsWithSelectedRoute(origin: String, destination: String) {
+        val apiKey = "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
+        val url =
+            "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&mode=transit&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        "Failed to fetch route details",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (response.isSuccessful) {
+                        val jsonData = response.body()?.string()
+                        val jsonObject = JSONObject(jsonData ?: "")
+                        val routes = jsonObject.optJSONArray("routes")
+                        if (routes != null && routes.length() > 0) {
+                            val firstRoute = routes.getJSONObject(0)
+                            val legs = firstRoute.getJSONArray("legs")
+                            if (legs.length() > 0) {
+                                val steps = legs.getJSONObject(0).getJSONArray("steps")
+                                val stepDetails = StringBuilder()
+                                for (i in 0 until steps.length()) {
+                                    val step = steps.getJSONObject(i)
+                                    val instruction = step.getString("html_instructions")
+                                    stepDetails.append("${i + 1}. $instruction\n")
+                                }
+                                runOnUiThread {
+                                    AlertDialog.Builder(this@HomeActivity)
+                                        .setTitle("Route Steps")
+                                        .setMessage(stepDetails.toString())
+                                        .setPositiveButton("OK", null)
+                                        .show()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        })
+    }
+
+    fun openGoogleMaps(origin: String, destination: String) {
+        val googleMapsUrl = "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination&travelmode=driving"
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(googleMapsUrl))
+        intent.setPackage("com.google.android.apps.maps") // Ensure it opens in Google Maps app if installed
+
+        // Check if there's an app that can handle the intent
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Google Maps is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
