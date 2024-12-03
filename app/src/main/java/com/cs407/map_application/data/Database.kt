@@ -10,7 +10,7 @@ import androidx.room.Database
 
 
 @Database(entities = [Location::class, Route::class], version = 1)
-@TypeConverters(Converters::class)
+
 abstract class AppDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
     abstract fun routeDao(): RouteDao
@@ -44,7 +44,6 @@ data class Location(
     val name: String,
     val latitude: Double,
     val longitude: Double,
-    val timestamp: Long = System.currentTimeMillis()
 )
 
 
@@ -61,29 +60,20 @@ data class Route(
     val transportMode: String
 )
 
-class Converters {
-    @TypeConverter
-    fun fromTimestamp(value:Long): Date {
-        return Date(value)
-    }
-
-    @TypeConverter
-    fun dateToTimestamp(date: Date): Long{
-        return date.time
-    }
-}
 
 // DAO Interface
 @Dao
 interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDestination(location: Location): Long
+    suspend fun insertLocation(location: Location): Long
 
 
     @Query("SELECT * FROM locations WHERE id = :id")
     suspend fun getLocationById(id: Int): Location?
 
+    @Query("SELECT * FROM locations")
+    suspend fun getAllLocations(): List<Location>
 }
 
 @Dao

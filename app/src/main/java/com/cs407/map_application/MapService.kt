@@ -108,12 +108,11 @@ class MapService(
 
                     // Assuming you have already inserted the locations into your database:
                     val startLocation =
-                        Location(name = origin, latitude = 0.0, longitude = 0.0, timestamp = 0)
+                        Location(name = origin, latitude = 0.0, longitude = 0.0)
                     val endLocation = Location(
                         name = destination,
                         latitude = 0.0,
                         longitude = 0.0,
-                        timestamp = 0
                     )
 
                     // Here you can map the response to your Route entity and save it to the database if needed.
