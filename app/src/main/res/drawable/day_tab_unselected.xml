@@ -1,7 +1,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@android:color/transparent" />
-    <stroke
-        android:width="2dp"
-        android:color="#6A0DAD" /> <!-- Purple border -->
-    <corners android:radius="8dp" />
+    <solid android:color="#E0E0E0" />
+    <corners android:radius="16dp" />
 </shape>
