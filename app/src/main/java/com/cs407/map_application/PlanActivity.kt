@@ -94,7 +94,7 @@ class PlanActivity : AppCompatActivity() {
                     "Walking" -> R.drawable.ic_walk
                     "Car" -> R.drawable.ic_car
                     "Bus" -> R.drawable.ic_bus
-                    else -> R.drawable.ic_default_transport
+                    else -> R.drawable.ic_default
                 }
             )
 
@@ -109,7 +109,8 @@ class PlanActivity : AppCompatActivity() {
             return listOf(
                 PlanSegment("Capitol Square", "10 min", "Walking"),
                 PlanSegment("State Street", "5 min", "Car"),
-                PlanSegment("Union South", "12 min", "Bus")
+                PlanSegment("Union South", "3 min", "Walking"),
+                PlanSegment("Engineering Hall", "", "")
             )
         }
         if (day == 2) {
@@ -117,18 +118,19 @@ class PlanActivity : AppCompatActivity() {
                 PlanSegment("Microbial Science Building","12 min", "Bus"),
                 PlanSegment("Chazen Museum of Art", "5 min", "Bus"),
                 PlanSegment("Wisconsin Institute of Medical Research", "9 min", "Bus"),
-                PlanSegment("Wholefoods Market", "11 min", "Car")
+                PlanSegment("Wholefoods Market", "", "")
             )
         }
         if (day == 3) {
             return listOf(
-                PlanSegment("Lark at Kohl", "22 min", "Car")
+                PlanSegment("Lark at Kohl", "22 min", "Car"),
+                PlanSegment("West Towne Mall", "", "")
             )
         }
         return listOf(
             PlanSegment("Capitol Square", "10 min", "Walking"),
             PlanSegment("State Street", "5 min", "Car"),
-            PlanSegment("Union South", "12 min", "Bus")
+            PlanSegment("Union South", "", "")
         )
 
     }
