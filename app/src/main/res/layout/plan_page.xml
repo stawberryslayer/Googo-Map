@@ -30,36 +30,37 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginLeft="22dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/daysLayout">
 
-            <!-- Example of Day Tabs -->
-            <Button
-                android:id="@+id/day1_button"
-                android:layout_width="65dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/day_tab_selected"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Day 1"
-                android:textColor="@android:color/black"
-                android:textSize="11dp"
-                tools:ignore="TextSizeCheck" />
+<!--            &lt;!&ndash; Example of Day Tabs &ndash;&gt;-->
+<!--            <Button-->
+<!--                android:id="@+id/day1_button"-->
+<!--                android:layout_width="65dp"-->
+<!--                android:layout_height="38dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:background="@drawable/day_tab_selected"-->
+<!--                android:paddingHorizontal="16dp"-->
+<!--                android:paddingVertical="8dp"-->
+<!--                android:text="Day 1"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="11dp"-->
+<!--                tools:ignore="TextSizeCheck" />-->
 
-            <Button
-                android:id="@+id/day2_button"
-                android:layout_width="65dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/day_tab_unselected"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Day 2"
-                android:textColor="@android:color/black"
-                android:textSize="11dp"
-                tools:ignore="TextSizeCheck" />
+<!--            <Button-->
+<!--                android:id="@+id/day2_button"-->
+<!--                android:layout_width="65dp"-->
+<!--                android:layout_height="38dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:background="@drawable/day_tab_unselected"-->
+<!--                android:paddingHorizontal="16dp"-->
+<!--                android:paddingVertical="8dp"-->
+<!--                android:text="Day 2"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="11dp"-->
+<!--                tools:ignore="TextSizeCheck" />-->
 
-            <!-- Add more tabs as needed -->
+<!--            &lt;!&ndash; Add more tabs as needed &ndash;&gt;-->
         </LinearLayout>
     </LinearLayout>
 
