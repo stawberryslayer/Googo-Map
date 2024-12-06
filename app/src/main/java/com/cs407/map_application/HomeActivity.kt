@@ -260,10 +260,12 @@ class HomeActivity : AppCompatActivity() {
             }
 
             destinationList.addView(destinationView)
+
+            if (destinationList.childCount > 0) {
+                findViewById<TextView>(R.id.hint_text).visibility = View.GONE
+            }
         }
     }
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -308,26 +310,7 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
-    private fun addDestination(name: String) {
-        // Inflate the destination_item layout
-        val destinationView = LayoutInflater.from(this).inflate(R.layout.destination_item, destinationList, false)
 
-        // Set the destination name
-        val destinationName: TextView = destinationView.findViewById(R.id.destination_name)
-        destinationName.text = name
-
-        // Find the delete button in the destination_item layout
-        val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
-
-        // Set the click listener for the delete button
-        deleteButton.setOnClickListener {
-            // Remove the destination view from the list
-            destinationList.removeView(destinationView)
-        }
-
-        // Add the new destination view to the list
-        destinationList.addView(destinationView)
-    }
 
 }
 
