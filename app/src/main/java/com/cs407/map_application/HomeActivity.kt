@@ -140,6 +140,7 @@ class HomeActivity : AppCompatActivity() {
             // Stay on the current page
         }
 
+
         startButton.setOnClickListener{
 
             val sharedPreferences = this.getSharedPreferences("TripPrefs", Context.MODE_PRIVATE)
@@ -257,6 +258,10 @@ class HomeActivity : AppCompatActivity() {
             val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
             deleteButton.setOnClickListener {
                 destinationList.removeView(destinationView)
+                // If no destinations are left, show the hint text again
+                if (destinationList.childCount == 0) {
+                    findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
+                }
             }
 
             destinationList.addView(destinationView)
@@ -264,6 +269,7 @@ class HomeActivity : AppCompatActivity() {
             if (destinationList.childCount > 0) {
                 findViewById<TextView>(R.id.hint_text).visibility = View.GONE
             }
+
         }
     }
 
