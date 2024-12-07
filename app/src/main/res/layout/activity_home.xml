@@ -209,7 +209,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="25dp">
 
         <!-- First Rectangle Button -->
 
