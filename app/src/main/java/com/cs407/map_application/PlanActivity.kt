@@ -59,7 +59,7 @@ class PlanActivity : AppCompatActivity() {
         // Initialize buttons
         val homeButton: Button = findViewById(R.id.home)
         val savedPlansButton: Button = findViewById(R.id.plan)
-
+        val viewDetailsButton: Button = findViewById(R.id.view_details_button)
         // Click listener for "Home Page" button
         homeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
@@ -70,6 +70,12 @@ class PlanActivity : AppCompatActivity() {
         // Click listener for "Saved Plans" button (do nothing)
         savedPlansButton.setOnClickListener {
             // Stay on the current page
+        }
+
+        viewDetailsButton.setOnClickListener {
+            val intent = Intent(this, DetailPage::class.java)
+            startActivity(intent)
+            finish() // Close current activity to prevent stack buildup
         }
     }
 

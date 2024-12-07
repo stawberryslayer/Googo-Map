@@ -1,8 +1,10 @@
 package com.cs407.map_application
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -14,15 +16,24 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
+
+import com.google.maps.android.PolyUtil
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 
 class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val destinationLocation = LatLng(43.0790, -89.3989)
+
+    // Test addresses in Madison, WI
+    private val stateCapitol = LatLng(43.0747, -89.3844)
+    private val memorialUnion = LatLng(43.0766, -89.3995)
+    private val henryVilasZoo = LatLng(43.0616, -89.4091)
+
+    private val boundsBuilder = LatLngBounds.Builder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,35 +55,107 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
-            showUserLocation()
+            showRoutes()
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
 
-        mMap.addMarker(MarkerOptions().position(destinationLocation).title("Destination"))
-
+        mMap.addMarker(MarkerOptions().position(stateCapitol).title("State Capitol"))
+        mMap.addMarker(MarkerOptions().position(memorialUnion).title("Memorial Union"))
+        mMap.addMarker(MarkerOptions().position(henryVilasZoo).title("Henry Vilas Zoo"))
     }
 
-    private fun showUserLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                location?.let {
-                    val userLocation = LatLng(it.latitude, it.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+    private fun showRoutes() {
+        requestRoute(stateCapitol, memorialUnion, Color.BLUE)
 
-                    drawRoute(userLocation, destinationLocation)
+        requestRoute(memorialUnion, henryVilasZoo, Color.RED)
+    }
+
+    private fun requestRoute(start: LatLng, end: LatLng, color: Int) {
+        val apiKey = "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
+        val url = "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=${start.latitude},${start.longitude}" +
+                "&destination=${end.latitude},${end.longitude}" +
+                "&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonObject = JSONObject(responseBody)
+                    val routes = jsonObject.getJSONArray("routes")
+                    if (routes.length() > 0) {
+                        val overviewPolyline = routes.getJSONObject(0)
+                            .getJSONObject("overview_polyline")
+                            .getString("points")
+
+                        val decodedPath: List<LatLng> = PolyUtil.decode(overviewPolyline)
+
+                        for (point in decodedPath) {
+                            boundsBuilder.include(point)
+                        }
+
+                        runOnUiThread {
+                            val polyline = mMap.addPolyline(
+                                PolylineOptions()
+                                    .addAll(decodedPath)
+                                    .color(color)
+                                    .width(5f)
+                            )
+                            updateCameraView()
+
+                            polyline.tag = Pair(start, end)
+                            polyline.isClickable = true
+
+                            mMap.setOnPolylineClickListener { clickedPolyline ->
+                                val points = clickedPolyline.tag as? Pair<LatLng, LatLng>
+                                points?.let {
+                                    //openRouteDetails(it.first, it.second)
+                                    openInGoogleMaps(it.first, it.second)
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        }
+        })
     }
 
-    private fun drawRoute(start: LatLng, end: LatLng) {
-        val polylineOptions = PolylineOptions()
-            .add(start)
-            .add(end)
-            .color(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
-            .width(5f)
+    private fun updateCameraView() {
+        val bounds = boundsBuilder.build()
+        val padding = 100
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+        mMap.animateCamera(cameraUpdate)
+    }
 
-        mMap.addPolyline(polylineOptions)
+/*    private fun openRouteDetails(start: LatLng, end: LatLng) {
+        // 废案  Try to describe the route in words
+        val intent = Intent(this, RouteActivity::class.java).apply {
+            putExtra("start_lat", start.latitude)
+            putExtra("start_lng", start.longitude)
+            putExtra("end_lat", end.latitude)
+            putExtra("end_lng", end.longitude)
+        }
+        startActivity(intent)
+    }
+*/
+
+    private fun openInGoogleMaps(start: LatLng, end: LatLng) {
+        val uri = Uri.parse(
+            "https://www.google.com/maps/dir/?api=1" +
+                    "&origin=${start.latitude},${start.longitude}" +
+                    "&destination=${end.latitude},${end.longitude}" +
+                    "&travelmode=driving" // We can use driving, walking, bicycling, or transit
+        )
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.setPackage("com.google.android.apps.maps")
+        startActivity(intent)
     }
 }

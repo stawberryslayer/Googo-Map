@@ -184,7 +184,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (response.isSuccessful) {
-                        val jsonData = response.body()?.string()
+                        val jsonData = response.body?.string()
                         val jsonObject = JSONObject(jsonData ?: "")
                         val routes = jsonObject.optJSONArray("routes")
                         if (routes != null && routes.length() > 0) {
