@@ -59,5 +59,9 @@
             android:name=".SelectLocationActivity">
         </activity>
 
+        <activity
+            android:name=".RouteActivity">
+        </activity>
+
     </application>
 </manifest>
