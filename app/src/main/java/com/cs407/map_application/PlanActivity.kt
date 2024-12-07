@@ -17,8 +17,11 @@ class PlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState) // Call the parent onCreate method
         setContentView(R.layout.plan_page) // Set the correct layout resource
 
-        val daysCount = intent.getIntExtra("daysCount", 3) // Placeholder for the number of days
+        val daysCount = intent.getIntExtra("daysCount", 5) // Placeholder for the number of days
         val daysLayout = findViewById<LinearLayout>(R.id.daysLayout)
+
+        // Declare defaultButton outside the loop
+        var defaultButton: Button? = null
 
         fun Int.dpToPx(context: Context): Int {
             return (this * context.resources.displayMetrics.density).toInt()
@@ -39,8 +42,19 @@ class PlanActivity : AppCompatActivity() {
                     highlightButton(this, daysLayout)
                 }
             }
+            if (i == 1) {
+                defaultButton = button // Track the default button
+            }
+
             daysLayout.addView(button)
         }
+
+        // Load the plan for DAY 1 by default
+        defaultButton?.let {
+            loadPlanForDay(1)
+            highlightButton(it, daysLayout)
+        }
+
 
         // Initialize buttons
         val homeButton: Button = findViewById(R.id.home)
