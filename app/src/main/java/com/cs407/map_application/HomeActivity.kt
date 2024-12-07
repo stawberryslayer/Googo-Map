@@ -154,24 +154,10 @@ class HomeActivity : AppCompatActivity() {
                     locationDao.insertLocation(location)
                 }
             }
-
-
-            // preference getter
-            //val tripDuration = sharedPreferences.getInt("trip_duration", 1)
-            //val travelMode = sharedPreferences.getInt("travel_mode", "By Car")
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val testList = locationDao.getAllLocations()
-//                testList.forEach { location ->
-//                    Log.d("LocationInfo", "ID: ${location.id}, Name: ${location.name}, Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-//                }
-//            }
-
-
-
-            //openGoogleMapsWithSelectedRoute("832 Regent St, Madison, WI", "650 Elm Drive, Madison, WI")
+            val intent = Intent(this, PlanActivity::class.java)
+            startActivity(intent)
+            finish() // Close current activity to prevent stack buildup
         }
-
-
 
     }
 
