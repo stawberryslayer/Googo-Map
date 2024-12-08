@@ -256,7 +256,7 @@ class HomeActivity : AppCompatActivity() {
             val destinationView = LayoutInflater.from(this).inflate(R.layout.destination_item, destinationList, false)
 
             val destinationNameText: TextView = destinationView.findViewById(R.id.destination_name)
-            destinationNameText.text = "$locationName (Lat: $latitude, Lng: $longitude)"
+            destinationNameText.text = "$locationName"
 
             locationList.add(Location(name = locationName, latitude = latitude, longitude = longitude))
             val deleteButton: Button = destinationView.findViewById(R.id.delete_button)

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -41,7 +42,23 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
         val backButton: ImageButton = findViewById(R.id.back_button)
         backButton.setOnClickListener {
+            val intent = Intent(this, PlanActivity::class.java)
+            startActivity(intent)
             finish()
+        }
+
+        val downloadButton: Button = findViewById(R.id.download_button)
+        downloadButton.setOnClickListener {
+            val routes = listOf(
+                Pair(stateCapitol, memorialUnion),
+                Pair(memorialUnion, henryVilasZoo)
+            )
+
+            for (route in routes) {
+                val start = route.first
+                val end = route.second
+                openRouteDetails(start, end)
+            }
         }
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -135,17 +152,16 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
         mMap.animateCamera(cameraUpdate)
     }
 
-/*    private fun openRouteDetails(start: LatLng, end: LatLng) {
-        // 废案  Try to describe the route in words
-        val intent = Intent(this, RouteActivity::class.java).apply {
-            putExtra("start_lat", start.latitude)
-            putExtra("start_lng", start.longitude)
-            putExtra("end_lat", end.latitude)
-            putExtra("end_lng", end.longitude)
-        }
-        startActivity(intent)
+    private fun openRouteDetails(start: LatLng, end: LatLng) {
+            // describe the route in words
+            val intent = Intent(this, RouteActivity::class.java).apply {
+                putExtra("start_lat", start.latitude)
+                putExtra("start_lng", start.longitude)
+                putExtra("end_lat", end.latitude)
+                putExtra("end_lng", end.longitude)
+            }
+            startActivity(intent)
     }
-*/
 
     private fun openInGoogleMaps(start: LatLng, end: LatLng) {
         val uri = Uri.parse(
