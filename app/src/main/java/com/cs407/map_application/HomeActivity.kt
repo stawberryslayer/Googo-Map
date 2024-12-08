@@ -179,7 +179,6 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-
     fun openGoogleMapsWithSelectedRoute(origin: String, destination: String) {
         val apiKey = "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
         val url =
@@ -231,6 +230,7 @@ class HomeActivity : AppCompatActivity() {
 
         })
     }
+
 
     fun openGoogleMaps(origin: String, destination: String) {
         val googleMapsUrl = "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination&travelmode=driving"
