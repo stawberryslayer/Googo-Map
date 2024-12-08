@@ -1,4 +1,7 @@
 package com.cs407.map_application
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.cs407.map_application.model.Destination
 
 import android.content.Intent
 import android.net.Uri
@@ -148,6 +151,21 @@ class HomeActivity : AppCompatActivity() {
             sharedPreferences.edit().putString("travel_mode", travelModes[currentModeIndex]).apply()
 
             val locationDao = database.locationDao()
+
+            val destinationList = locationList.map { loc ->
+                Destination(
+                    name = loc.name,
+                    address = loc.name,
+                    latitude = loc.latitude,
+                    longitude = loc.longitude
+                )
+            }
+
+            val gson = Gson()
+            val destinationsJson = gson.toJson(destinationList)
+
+
+            sharedPreferences.edit().putString("destinations_json", destinationsJson).apply()
 
             CoroutineScope(Dispatchers.IO).launch {
                 for (location in locationList) {
