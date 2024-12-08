@@ -37,10 +37,10 @@ class PlanActivity : AppCompatActivity() {
 
         dayWiseDestinations = distributeDestinationsEvenly(destinations, tripDuration)
 
-        // 先加载第一天行程
+        // Firstly load the first day
         loadPlanForDay(1, dayWiseDestinations, travelMode)
 
-        // 创建 Day Tabs
+        // create Day Tabs
         var defaultButton: Button? = null
 
         fun Int.dpToPx(context: Context): Int {
@@ -68,7 +68,7 @@ class PlanActivity : AppCompatActivity() {
             daysLayout.addView(button)
         }
 
-        // 高亮并加载第一天的行程
+        // Highlight and load the first day's itinerary
         defaultButton?.let {
             loadPlanForDay(1, dayWiseDestinations, travelMode)
             highlightButton(it, daysLayout)
@@ -79,19 +79,19 @@ class PlanActivity : AppCompatActivity() {
         val savedPlansButton: Button = findViewById(R.id.plan)
         val viewDetailsButton: Button = findViewById(R.id.view_details_button)
 
-        // Home Page按钮
+        // Home Page button
         homeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        // Saved Plans按钮（目前无操作）
+        // Saved Plans button（目前无操作）
         savedPlansButton.setOnClickListener {
             // Stay on the current page
         }
 
-        // View Details按钮
+        // View Details button
         viewDetailsButton.setOnClickListener {
             val intent = Intent(this, DetailPage::class.java)
             startActivity(intent)
@@ -120,7 +120,7 @@ class PlanActivity : AppCompatActivity() {
                     )
                 )
             } else {
-                // 最后一个目的地，不需要duration
+                // The last destination，no need for duration
                 segments.add(
                     PlanSegment(
                         startLocation = start.name,
