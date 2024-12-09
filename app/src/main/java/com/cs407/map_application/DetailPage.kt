@@ -11,6 +11,8 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.cs407.map_application.data.AppDatabase
+import com.cs407.map_application.data.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,22 +25,25 @@ import com.google.maps.android.PolyUtil
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    // Test addresses in Madison, WI
-    private val stateCapitol = LatLng(43.0747, -89.3844)
-    private val memorialUnion = LatLng(43.0766, -89.3995)
-    private val henryVilasZoo = LatLng(43.0616, -89.4091)
-
     private val boundsBuilder = LatLngBounds.Builder()
+    private lateinit var database: AppDatabase
+    private lateinit var locationList: List<Location>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail)
+
+        database = AppDatabase.getDatabase(this)
 
         val backButton: ImageButton = findViewById(R.id.back_button)
         backButton.setOnClickListener {
@@ -49,15 +54,12 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
         val downloadButton: Button = findViewById(R.id.download_button)
         downloadButton.setOnClickListener {
-            val routes = listOf(
-                Pair(stateCapitol, memorialUnion),
-                Pair(memorialUnion, henryVilasZoo)
-            )
-
-            for (route in routes) {
-                val start = route.first
-                val end = route.second
-                openRouteDetails(start, end)
+            if (locationList.size >= 2) {
+                for (i in 0 until locationList.size - 1) {
+                    val start = LatLng(locationList[i].latitude, locationList[i].longitude)
+                    val end = LatLng(locationList[i + 1].latitude, locationList[i + 1].longitude)
+                    openRouteDetails(start, end)
+                }
             }
         }
 
@@ -65,6 +67,33 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        loadLocationsFromDatabase()
+    }
+
+    private fun loadLocationsFromDatabase() {
+        lifecycleScope.launch {
+            locationList = withContext(Dispatchers.IO) {
+                database.locationDao().getAllLocations()
+            }
+            onLocationsLoaded()
+        }
+    }
+
+    private fun onLocationsLoaded() {
+        for (location in locationList) {
+            val latLng = LatLng(location.latitude, location.longitude)
+            mMap.addMarker(MarkerOptions().position(latLng).title(location.name))
+            boundsBuilder.include(latLng)
+        }
+
+        if (locationList.size >= 2) {
+            for (i in 0 until locationList.size - 1) {
+                val start = LatLng(locationList[i].latitude, locationList[i].longitude)
+                val end = LatLng(locationList[i + 1].latitude, locationList[i + 1].longitude)
+                requestRoute(start, end, Color.BLUE)
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -72,20 +101,12 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
-            showRoutes()
+            if (this::locationList.isInitialized) {
+                onLocationsLoaded()
+            }
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
-
-        mMap.addMarker(MarkerOptions().position(stateCapitol).title("State Capitol"))
-        mMap.addMarker(MarkerOptions().position(memorialUnion).title("Memorial Union"))
-        mMap.addMarker(MarkerOptions().position(henryVilasZoo).title("Henry Vilas Zoo"))
-    }
-
-    private fun showRoutes() {
-        requestRoute(stateCapitol, memorialUnion, Color.BLUE)
-
-        requestRoute(memorialUnion, henryVilasZoo, Color.RED)
     }
 
     private fun requestRoute(start: LatLng, end: LatLng, color: Int) {
@@ -134,7 +155,6 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
                             mMap.setOnPolylineClickListener { clickedPolyline ->
                                 val points = clickedPolyline.tag as? Pair<LatLng, LatLng>
                                 points?.let {
-                                    //openRouteDetails(it.first, it.second)
                                     openInGoogleMaps(it.first, it.second)
                                 }
                             }
@@ -153,14 +173,13 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun openRouteDetails(start: LatLng, end: LatLng) {
-            // describe the route in words
-            val intent = Intent(this, RouteActivity::class.java).apply {
-                putExtra("start_lat", start.latitude)
-                putExtra("start_lng", start.longitude)
-                putExtra("end_lat", end.latitude)
-                putExtra("end_lng", end.longitude)
-            }
-            startActivity(intent)
+        val intent = Intent(this, RouteActivity::class.java).apply {
+            putExtra("start_lat", start.latitude)
+            putExtra("start_lng", start.longitude)
+            putExtra("end_lat", end.latitude)
+            putExtra("end_lng", end.longitude)
+        }
+        startActivity(intent)
     }
 
     private fun openInGoogleMaps(start: LatLng, end: LatLng) {
@@ -168,7 +187,7 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
             "https://www.google.com/maps/dir/?api=1" +
                     "&origin=${start.latitude},${start.longitude}" +
                     "&destination=${end.latitude},${end.longitude}" +
-                    "&travelmode=driving" // We can use driving, walking, bicycling, or transit
+                    "&travelmode=driving"
         )
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.setPackage("com.google.android.apps.maps")
