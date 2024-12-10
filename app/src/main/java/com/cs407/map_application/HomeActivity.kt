@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
     private val travelModes = arrayOf("By Bus", "Walking", "By Car")
     private var currentModeIndex = 0
     private var locationList: MutableList<Location> = mutableListOf()
-    val database = AppDatabase.getDatabase(this)
+
 
 
     private lateinit var destinationList: LinearLayout
@@ -54,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        val database = AppDatabase.getDatabase(this)
 
         val tripDurationTextView: TextView = findViewById(R.id.trip_duration)
         val incrementButton: Button = findViewById(R.id.increment_button)
@@ -202,7 +202,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (response.isSuccessful) {
-                        val jsonData = response.body()?.string()
+                        val jsonData = response.body?.string()
                         val jsonObject = JSONObject(jsonData ?: "")
                         val routes = jsonObject.optJSONArray("routes")
                         if (routes != null && routes.length() > 0) {
@@ -267,6 +267,7 @@ class HomeActivity : AppCompatActivity() {
                 if (destinationList.childCount == 0) {
                     findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
                 }
+                val database = AppDatabase.getDatabase(this)
                 val locationDao = database.locationDao()
                 CoroutineScope(Dispatchers.IO).launch {
                     locationDao.deleteLocationByName(locationName)
@@ -328,6 +329,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         //Remove everything from the db
+        val database = AppDatabase.getDatabase(this)
         val locationDao = database.locationDao()
         CoroutineScope(Dispatchers.IO).launch {
             locationDao.deleteAllLocations()
