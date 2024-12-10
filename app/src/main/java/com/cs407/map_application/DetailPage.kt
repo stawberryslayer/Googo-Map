@@ -1,16 +1,26 @@
 package com.cs407.map_application
 
 import android.Manifest
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.cs407.map_application.data.AppDatabase
 import com.cs407.map_application.data.Location
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,15 +30,16 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-
 import com.google.maps.android.PolyUtil
-import okhttp3.*
-import org.json.JSONObject
-import java.io.IOException
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.*
+import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
@@ -58,7 +69,9 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
                 for (i in 0 until locationList.size - 1) {
                     val start = LatLng(locationList[i].latitude, locationList[i].longitude)
                     val end = LatLng(locationList[i + 1].latitude, locationList[i + 1].longitude)
-                    openRouteDetails(start, end)
+                    fetchRouteDetails(start, end) { details ->
+                        saveRouteToGallery(details)
+                    }
                 }
             }
         }
@@ -170,6 +183,122 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
         val padding = 100
         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
         mMap.animateCamera(cameraUpdate)
+    }
+
+    private fun fetchRouteDetails(start: LatLng, end: LatLng, callback: (String) -> Unit) {
+        val apiKey = "AIzaSyB7W-JKD19WIleSOyv5aJBIzQc651vZMkU"
+        val url = "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=${start.latitude},${start.longitude}" +
+                "&destination=${end.latitude},${end.longitude}" +
+                "&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@DetailPage, "Failed to fetch route details", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonObject = JSONObject(responseBody)
+                    val routes = jsonObject.getJSONArray("routes")
+                    if (routes.length() > 0) {
+                        val legs = routes.getJSONObject(0).getJSONArray("legs")
+                        val leg = legs.getJSONObject(0)
+                        val distance = leg.getJSONObject("distance").getString("text")
+                        val duration = leg.getJSONObject("duration").getString("text")
+                        val steps = leg.getJSONArray("steps")
+
+                        val directions = StringBuilder("Distance: $distance\nDuration: $duration\n\nSteps:\n")
+                        for (i in 0 until steps.length()) {
+                            val step = steps.getJSONObject(i)
+                            val instruction = step.getString("html_instructions").replace("<[^>]*>".toRegex(), "")
+                            directions.append("- $instruction\n")
+                        }
+                        callback(directions.toString())
+                    }
+                }
+            }
+        })
+    }
+
+    private fun saveRouteToGallery(details: String) {
+        val bitmap = Bitmap.createBitmap(1080, 1920, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint().apply {
+            color = Color.BLACK
+            textSize = 40f
+            isAntiAlias = true
+        }
+
+        canvas.drawColor(Color.WHITE)
+
+        val lines = details.split("\n")
+        var yOffset = 50f
+        for (line in lines) {
+            canvas.drawText(line, 20f, yOffset, paint)
+            yOffset += 60f
+        }
+
+        val fileName = "route_details_${System.currentTimeMillis()}.png"
+        saveBitmapToGallery(this, bitmap, fileName)
+    }
+
+    private fun saveBitmapToGallery(context: Context, bitmap: Bitmap, fileName: String) {
+        try {
+            val outputStream: OutputStream?
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+
+                val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                if (uri == null) {
+                    runOnUiThread {
+                        Toast.makeText(context, "Failed to save route to gallery.", Toast.LENGTH_SHORT).show()
+                    }
+                    return
+                }
+                outputStream = context.contentResolver.openOutputStream(uri)
+            } else {
+                val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                if (!picturesDir.exists()) {
+                    if (!picturesDir.mkdirs()) {
+                        runOnUiThread {
+                            Toast.makeText(context, "Failed to create directory for saving image.", Toast.LENGTH_SHORT).show()
+                        }
+                        return
+                    }
+                }
+                val file = File(picturesDir, fileName)
+                outputStream = FileOutputStream(file)
+
+                val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+                mediaScanIntent.data = Uri.fromFile(file)
+                context.sendBroadcast(mediaScanIntent)
+            }
+
+            outputStream?.use {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                runOnUiThread {
+                    Toast.makeText(context, "Route saved to gallery!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            runOnUiThread {
+                Toast.makeText(context, "Error saving image: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun openRouteDetails(start: LatLng, end: LatLng) {
