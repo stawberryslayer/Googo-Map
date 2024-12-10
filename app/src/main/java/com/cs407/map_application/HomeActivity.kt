@@ -148,11 +148,17 @@ class HomeActivity : AppCompatActivity() {
 
         startButton.setOnClickListener{
 
+            //Remove everything from the db
+            val locationDao = database.locationDao()
+            CoroutineScope(Dispatchers.IO).launch {
+                locationDao.deleteAllLocations()
+            }
+
+
             val sharedPreferences = this.getSharedPreferences("TripPrefs", Context.MODE_PRIVATE)
             sharedPreferences.edit().putInt("trip_duration", tripDuration).apply()
             sharedPreferences.edit().putString("travel_mode", travelModes[currentModeIndex]).apply()
 
-            val locationDao = database.locationDao()
 
             val destinationList = locationList.map { loc ->
                 Destination(
@@ -337,16 +343,7 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        //Remove everything from the db
-        val database = AppDatabase.getDatabase(this)
-        val locationDao = database.locationDao()
-        CoroutineScope(Dispatchers.IO).launch {
-            locationDao.deleteAllLocations()
-        }
 
-    }
 
 
 
