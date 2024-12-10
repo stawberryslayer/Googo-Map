@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -247,6 +248,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    // callback function for adding destination
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_MAP && resultCode == RESULT_OK) {
@@ -258,8 +260,10 @@ class HomeActivity : AppCompatActivity() {
 
             val destinationNameText: TextView = destinationView.findViewById(R.id.destination_name)
             destinationNameText.text = "$locationName"
+            val location = Location(name = locationName, latitude = latitude, longitude = longitude)
 
-            locationList.add(Location(name = locationName, latitude = latitude, longitude = longitude))
+
+            locationList.add(location)
             val deleteButton: Button = destinationView.findViewById(R.id.delete_button)
             deleteButton.setOnClickListener {
                 destinationList.removeView(destinationView)
@@ -267,14 +271,21 @@ class HomeActivity : AppCompatActivity() {
                 if (destinationList.childCount == 0) {
                     findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
                 }
-                val database = AppDatabase.getDatabase(this)
-                val locationDao = database.locationDao()
-                CoroutineScope(Dispatchers.IO).launch {
-                    locationDao.deleteLocationByName(locationName)
-                }
+                locationList.remove(location)
             }
 
+
             destinationList.addView(destinationView)
+            val checkBox = findViewById<CheckBox>(R.id.destination_checkbox)
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    // Add this location to the list
+                    val newLocation = Location(name = locationName, latitude = latitude, longitude = longitude)
+                    locationList.add(newLocation)
+                } else {
+                    locationList.removeAll { it.name == locationName }
+                }
+            }
 
             if (destinationList.childCount > 0) {
                 findViewById<TextView>(R.id.hint_text).visibility = View.GONE
