@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/common_google_signin_btn_text_light_disabled" /> <!-- Button color -->
+    <corners android:radius="0dp" /> <!-- No rounded corners -->
+
+</shape>
