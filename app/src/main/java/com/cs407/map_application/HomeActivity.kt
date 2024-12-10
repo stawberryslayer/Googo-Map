@@ -43,6 +43,7 @@ class HomeActivity : AppCompatActivity() {
     private val travelModes = arrayOf("By Bus", "Walking", "By Car")
     private var currentModeIndex = 0
     private var locationList: MutableList<Location> = mutableListOf()
+    val database = AppDatabase.getDatabase(this)
 
 
     private lateinit var destinationList: LinearLayout
@@ -53,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val database = AppDatabase.getDatabase(this)
+
 
         val tripDurationTextView: TextView = findViewById(R.id.trip_duration)
         val incrementButton: Button = findViewById(R.id.increment_button)
@@ -318,6 +319,16 @@ class HomeActivity : AppCompatActivity() {
         decrementButton.backgroundTintList = resources.getColorStateList(
             if (tripDuration <= 1) android.R.color.darker_gray else android.R.color.holo_blue_light
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //Remove everything from the db
+        val locationDao = database.locationDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            locationDao.deleteAllLocations()
+        }
+
     }
 
 
