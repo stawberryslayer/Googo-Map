@@ -77,6 +77,9 @@ interface LocationDao {
 
     @Query("DELETE FROM locations")
     suspend fun deleteAllLocations()
+
+    @Query("DELETE FROM locations WHERE name = :name")
+    suspend fun deleteLocationByName(name: String)
 }
 
 @Dao

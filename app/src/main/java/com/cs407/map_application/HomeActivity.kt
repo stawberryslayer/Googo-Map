@@ -202,7 +202,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (response.isSuccessful) {
-                        val jsonData = response.body?.string()
+                        val jsonData = response.body()?.string()
                         val jsonObject = JSONObject(jsonData ?: "")
                         val routes = jsonObject.optJSONArray("routes")
                         if (routes != null && routes.length() > 0) {
@@ -266,6 +266,10 @@ class HomeActivity : AppCompatActivity() {
                 // If no destinations are left, show the hint text again
                 if (destinationList.childCount == 0) {
                     findViewById<TextView>(R.id.hint_text).visibility = View.VISIBLE
+                }
+                val locationDao = database.locationDao()
+                CoroutineScope(Dispatchers.IO).launch {
+                    locationDao.deleteLocationByName(locationName)
                 }
             }
 
