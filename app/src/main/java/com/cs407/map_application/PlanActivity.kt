@@ -23,6 +23,7 @@ class PlanActivity : AppCompatActivity() {
     private var travelMode: String = "Walking"
     private lateinit var db: AppDatabase
     private lateinit var mapService: MapService
+    private var currentSelectedDayIndex: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,7 @@ class PlanActivity : AppCompatActivity() {
                 }
                 setBackgroundResource(R.drawable.day_tab_unselected)
                 setOnClickListener {
+                    currentSelectedDayIndex = i
                     loadPlanForDay(i, dayWiseDestinations, travelMode)
                     highlightButton(this, daysLayout)
                 }
@@ -95,10 +97,15 @@ class PlanActivity : AppCompatActivity() {
         }
 
         viewDetailsButton.setOnClickListener {
+            val gson = Gson()
+            val selectedDayDestinations = dayWiseDestinations[currentSelectedDayIndex-1]
+            val destinationsJson = gson.toJson(selectedDayDestinations)
             val intent = Intent(this, DetailPage::class.java)
+            intent.putExtra("destinations_json", destinationsJson)
             startActivity(intent)
-            finish()
         }
+
+
     }
 
     /**
