@@ -33,26 +33,20 @@ class SelectLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_location)
 
-        // 初始化 Google Places
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, "AIzaSyCE7HmQAIc9fggu5vAA8hdZeNK9-RaZKwA")
         }
 
-        // 初始化视图
         mapView = findViewById(R.id.map_view)
         locationText = findViewById(R.id.location_text)
         confirmButton = findViewById(R.id.confirm_button)
 
-        // 初始化地图
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
-        // 点击文本框打开 Google Places 搜索框
         locationText.setOnClickListener {
             openPlaceAutocomplete()
         }
 
-        // 确认按钮点击事件
         confirmButton.setOnClickListener {
             if (selectedLocation != null && selectedLocationName != null) {
                 val resultIntent = Intent().apply {
@@ -71,11 +65,9 @@ class SelectLocationActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // 设置默认位置
-        val defaultLocation = LatLng(37.7749, -122.4194) // 旧金山
+        val defaultLocation = LatLng(43.06801689107635, -89.40005063050859)//哥们家
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
 
-        // 如果已选择位置，则在地图上显示该位置
         selectedLocation?.let {
             addMarkerOnMap(it, selectedLocationName)
         }
@@ -100,7 +92,6 @@ class SelectLocationActivity : AppCompatActivity(), OnMapReadyCallback {
             selectedLocation = place.latLng
             selectedLocationName = place.name
 
-            // 更新地图标记和视图
             if (selectedLocation != null) {
                 addMarkerOnMap(selectedLocation!!, selectedLocationName)
                 locationText.text = selectedLocationName ?: "Unknown Location"
@@ -112,7 +103,7 @@ class SelectLocationActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun addMarkerOnMap(location: LatLng, title: String?) {
-        googleMap.clear() // 清除之前的标记
+        googleMap.clear()
         googleMap.addMarker(MarkerOptions().position(location).title(title))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
     }
