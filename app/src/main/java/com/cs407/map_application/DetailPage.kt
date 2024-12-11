@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cs407.map_application.data.AppDatabase
+import com.cs407.map_application.model.Destination
 import com.cs407.map_application.data.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -30,6 +31,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,14 +50,20 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val boundsBuilder = LatLngBounds.Builder()
-    private lateinit var database: AppDatabase
-    private lateinit var locationList: List<Location>
+    //private lateinit var database: AppDatabase
+    //private lateinit var locationList: List<Location>
+    private lateinit var destinationList: List<Destination>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail)
 
-        database = AppDatabase.getDatabase(this)
+        //database = AppDatabase.getDatabase(this)
+
+        val destinationsJson = intent.getStringExtra("destinations_json") ?: "[]"
+        val gson = Gson()
+        val destinationType = object : TypeToken<List<Destination>>() {}.type
+        destinationList = gson.fromJson(destinationsJson, destinationType)
 
         val backButton: ImageButton = findViewById(R.id.back_button)
         backButton.setOnClickListener {
@@ -65,10 +74,10 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
 
         val downloadButton: Button = findViewById(R.id.download_button)
         downloadButton.setOnClickListener {
-            if (locationList.size >= 2) {
-                for (i in 0 until locationList.size - 1) {
-                    val start = LatLng(locationList[i].latitude, locationList[i].longitude)
-                    val end = LatLng(locationList[i + 1].latitude, locationList[i + 1].longitude)
+            if (destinationList.size >= 2) {
+                for (i in 0 until destinationList.size - 1) {
+                    val start = LatLng(destinationList[i].latitude, destinationList[i].longitude)
+                    val end = LatLng(destinationList[i + 1].latitude, destinationList[i + 1].longitude)
                     fetchRouteDetails(start, end) { details ->
                         saveRouteToGallery(details)
                     }
@@ -80,11 +89,9 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        loadLocationsFromDatabase()
     }
 
-    private fun loadLocationsFromDatabase() {
+/*    private fun loadLocationsFromDatabase() {
         lifecycleScope.launch {
             locationList = withContext(Dispatchers.IO) {
                 database.locationDao().getAllLocations()
@@ -108,17 +115,31 @@ class DetailPage : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+*/
+override fun onMapReady(googleMap: GoogleMap) {
+    mMap = googleMap
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        mMap.isMyLocationEnabled = true
+        drawDestinationsAndRoutes()
+    } else {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+    }
+}
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+    private fun drawDestinationsAndRoutes() {
+        for (destination in destinationList) {
+            val latLng = LatLng(destination.latitude, destination.longitude)
+            mMap.addMarker(MarkerOptions().position(latLng).title(destination.name))
+            boundsBuilder.include(latLng)
+            updateCameraView()
+        }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.isMyLocationEnabled = true
-            if (this::locationList.isInitialized) {
-                onLocationsLoaded()
+        if (destinationList.size >= 2) {
+            for (i in 0 until destinationList.size - 1) {
+                val start = LatLng(destinationList[i].latitude, destinationList[i].longitude)
+                val end = LatLng(destinationList[i + 1].latitude, destinationList[i + 1].longitude)
+                requestRoute(start, end, Color.BLUE)
             }
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
     }
 
